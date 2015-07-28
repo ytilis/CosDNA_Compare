@@ -23,6 +23,7 @@ var cosDnaCompare = (function ($) {
     if( window.location.hostname !== 'cosdna.com'){
       alert( message.domain );
     } else {
+      addStyles();
       var product2 = prompt( message.prompt );
 
       // Make sure the user filled out the prompt
@@ -46,11 +47,25 @@ var cosDnaCompare = (function ($) {
   // FUNCTIONS
   // ===================================================================
 
+  // Add Styles - Adds custom CSS classes for display purposes
+  // -------------------------------------------------------------------
+  var addStyles = function(){
+    var customCSS =  $("<style>").attr("type", "text/css").appendTo("head");
+
+    customCSS.append(
+      ".cos_compare-match{ \
+        background:khaki; \
+      }"
+    );
+  };
+
   // Compare Products - Kickoff function for the comparison
   // -------------------------------------------------------------------
   var compareProducts = function( product2 ){
     // Get the ingredients on this page
     var product1 = getIngredients( $('html') );
+
+    $('.iStuffTable tr').removeClass('cos_compare-match');
 
     // Fetch the page we're comparing
     $.ajax({
@@ -114,7 +129,7 @@ var cosDnaCompare = (function ($) {
         var matched = matches.indexOf( $(this).text() );
 
         if( matched >= 0 ){
-          $(this).parent().css({ 'backgroundColor': 'khaki' });
+          $(this).parent().addClass('cos_compare-match');
         }
       });
 
