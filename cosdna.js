@@ -1,5 +1,5 @@
 /*!
-* Project - Object Info
+* CosDNA Compare - Tool to compare product ingredients on cosdna.com
 */
 
 var cosDnaCompare = (function ($) {
