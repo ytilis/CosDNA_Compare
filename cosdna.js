@@ -1,4 +1,10 @@
-javascript:(function(){
+/*!
+* Project - Object Info
+*/
+
+var cosDnaCompare = (function ($) {
+  // Variables
+  // -------------------------------------------------------------------
   var message = {
     prompt: 'Enter the URL for the CosDNA product you wish to compare',
     matches: '{#} exact matching ingredients found!',
@@ -8,6 +14,66 @@ javascript:(function(){
     other: 'Oops! Something went wrong! :('
   };
 
+
+
+  // Init - Anything you want to happen onLoad (usually event bindings)
+  // -------------------------------------------------------------------
+  var init = function () {
+    // Make sure we're on CosDNA
+    if( window.location.hostname !== 'cosdna.com'){
+      alert( message.domain );
+    } else {
+      var product2 = prompt( message.prompt );
+
+      // Make sure the user filled out the prompt
+      if(product2){
+        var hostname = $('<a>').attr('href', product2).attr('hostname');
+
+        // Make they entered a CosDNA link into the prompt
+        if (hostname === 'cosdna.com' && product2 != null) {
+          compareProducts(product2);
+        } else {
+          alert( message.domain );
+        }
+      } else {
+        alert( message.nullInput );
+      }
+    }
+  };
+
+
+
+  // FUNCTIONS
+  // ===================================================================
+
+  // Compare Products - Kickoff function for the comparison
+  // -------------------------------------------------------------------
+  var compareProducts = function( product2 ){
+    // Get the ingredients on this page
+    var product1 = getIngredients( $('html') );
+
+    // Fetch the page we're comparing
+    $.ajax({
+        type: 'GET',
+        url: product2,
+        error: function(xhr,status,error) {
+          alert( message.other );
+        },
+        success: function(data, status, xhr) {
+          var vDom = document.createElement( 'div' );
+          vDom.innerHTML = data;
+
+          // Get the ingredients from the other page
+          product2 = getIngredients( $(vDom) );
+
+          // Find matches and show them
+          showMatches( matchArrays( product1.sort(), product2.sort() ).matching );
+        }
+    });
+  };
+
+  // Get Ingredients - Takes DOM node contaihning ingredients table and spits out an array
+  // -------------------------------------------------------------------
   var getIngredients = function( $dom ){
     var results = [];
     $dom.find('.iStuffTable .iStuffETitle').each(function(){
@@ -17,6 +83,8 @@ javascript:(function(){
     return results;
   };
 
+  // Match Arrays - Compares the ingredient arrays and returns an object of matches
+  // -------------------------------------------------------------------
   var matchArrays = function(list1, list2){
     var match = [];
 
@@ -38,6 +106,8 @@ javascript:(function(){
     };
   };
 
+  // Show Matches - Highlights matching ihngredients in the table on the page
+  // -------------------------------------------------------------------
   var showMatches = function(matches){
     if( matches.length > 0 ){
       $('.iStuffTable .iStuffETitle').each(function(){
@@ -55,45 +125,16 @@ javascript:(function(){
   };
 
 
-  var init = function(product2){
-    var product1 = getIngredients( $('html') );
 
-    $('.iStuffTable .iStuffETitle').each(function(){
-      product1.push($(this).text())
-    });
+  // CLEANUP
+  // ===================================================================
 
-    $.ajax({
-        type: 'GET',
-        url: product2,
-        error: function(xhr,status,error) {
-          alert( message.other );
-        },
-        success: function(data, status, xhr) {
-          var vDom = document.createElement( 'div' );
-          vDom.innerHTML = data;
+  // Return - Which variables and objects to make available publicly
+  // -------------------------------------------------------------------
+  return {
+    init              : init
+  };
+})(jQuery);
 
-          product2 = getIngredients( $(vDom) );
 
-          showMatches( matchArrays( product1.sort(), product2.sort() ).matching );
-        }
-    });
-  }
-
-  if( window.location.hostname !== 'cosdna.com'){
-    alert( message.domain );
-  } else {
-    var product2 = prompt( message.prompt );
-
-    if(product2){
-      var hostname = $('<a>').attr('href', product2).attr('hostname');
-
-      if (hostname === 'cosdna.com' && product2 != null) {
-        init(product2);
-      } else {
-        alert( message.domain );
-      }
-    } else {
-      alert( message.nullInput );
-    }
-  }
-})();
+cosDnaCompare.init();
