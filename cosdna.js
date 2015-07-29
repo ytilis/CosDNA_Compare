@@ -5,6 +5,7 @@
 var cosDnaCompare = (function ($) {
   // Variables
   // -------------------------------------------------------------------
+  var loaded = false;
   var message = {
     prompt: 'Enter the URL for the CosDNA product you wish to compare',
     matches: '{#} exact matching ingredients found!',
@@ -23,7 +24,10 @@ var cosDnaCompare = (function ($) {
     if( window.location.hostname !== 'cosdna.com'){
       alert( message.domain );
     } else {
-      addStyles();
+      // Only load custom styles if this is our first run on the page
+      if( !loaded ) addStyles();
+
+      // Get product 2 from user
       var product2 = prompt( message.prompt );
 
       // Make sure the user filled out the prompt
@@ -71,7 +75,7 @@ var cosDnaCompare = (function ($) {
 
   // Compare Products - Kickoff function for the comparison
   // -------------------------------------------------------------------
-  var compareProducts = function( product2 ){
+  var compareProducts = function( url ){
     // Get the ingredients on this page
     var product1 = getIngredients( $('html') );
 
@@ -80,7 +84,7 @@ var cosDnaCompare = (function ($) {
     // Fetch the page we're comparing
     $.ajax({
         type: 'GET',
-        url: product2,
+        url: url,
         error: function(xhr,status,error) {
           alert( message.other );
         },
@@ -88,30 +92,36 @@ var cosDnaCompare = (function ($) {
           var vDom = document.createElement( 'div' );
           vDom.innerHTML = data;
 
-          // Show the product title from the other page
-          showTitle( $(vDom), product2 );
-
           // Get the ingredients from the other page
-          product2 = getIngredients( $(vDom) );
+          var product2 = getIngredients( $(vDom) );
 
-          // Find matches and show them
-          showMatches( matchArrays( product1.sort(), product2.sort() ).matching );
+          // Find matches
+          var output = matchArrays( product1.sort(), product2.sort() );
+
+          // Show the product title from the other page
+          showTitle( $(vDom), url, output.matching );
+
+          // Show matches
+          showMatches( output.matching );
+
+          loaded = true;
         }
     });
   };
 
   // Show Title - Show the product title from the AJAX fetched page
   // -------------------------------------------------------------------
-  var showTitle = function( $dom, url ){
+  var showTitle = function( $dom, url, matches ){
     var title = $dom.find('.ProdTitle').text();
 
-    if( $('.cc-title').length === 0 ){
-      $('<div class="cc-title">').insertAfter('#ing_reviewbar');
-    }
+    // Add title block if this is our first time running on the page
+    if( !loaded ) $('<div class="cc-title">').insertAfter('#ing_reviewbar');
 
+    // Build link to second product
     var link = $('<a>').attr('target', '_blank').attr('href', url).text(title);
 
-    $('.cc-title').empty().text( "Comparing to: " ).append( link );
+    // Add the number of matches with the link to the other product
+    $('.cc-title').empty().html( "<strong>" + matches.length + "</strong> matches with: " ).append( link );
   };
 
   // Get Ingredients - Takes DOM node contaihning ingredients table and spits out an array
@@ -125,26 +135,42 @@ var cosDnaCompare = (function ($) {
     return results;
   };
 
+  // Splice Value - Remove item from array by value
+  // -------------------------------------------------------------------
+  var spliceValue = function( arr, val ){
+    var index = arr.indexOf( val );
+    if (index >= 0) {
+      arr.splice( index, 1 );
+    }
+
+    return arr;
+  };
+
   // Match Arrays - Compares the ingredient arrays and returns an object of matches
   // -------------------------------------------------------------------
   var matchArrays = function(list1, list2){
-    var match = [];
+    var match = [],
+        diffList1 = list1.slice(),
+        diffList2 = list2.slice();
 
-    $.each(list1, function( index1, prod1 ) {
-      $.each(list2, function( index2, prod2 ) {
-        if( prod1 === prod2){
-          match.push(prod2);
+    for(var i = 0; i < list1.length; i++){
+      var product = list1[i];
 
-          list1.splice(index1, 1);
-          list2.splice(index2, 1);
-        }
-      });
-    });
+      var matched = list2.indexOf( product );
+
+      if( matched >= 0 ){
+        match.push(product);
+
+        // Remove it from the other arrays so we have more diff data
+        spliceValue(diffList1, product);
+        spliceValue(diffList2, product);
+      }
+    }
 
     return {
       matching: match,
-      list1: list1,
-      list2: list2
+      list1: diffList1,
+      list2: diffList2
     };
   };
 
@@ -160,9 +186,9 @@ var cosDnaCompare = (function ($) {
         }
       });
 
-      alert( message.matches.replace('{#}', matches.length) );
+      //alert( message.matches.replace('{#}', matches.length) );
     } else {
-      alert( message.noMatches );
+      //alert( message.noMatches );
     }
   };
 
