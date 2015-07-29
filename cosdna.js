@@ -61,13 +61,13 @@ var cosDnaCompare = (function ($) {
         background:#FFEDCB; \
       } \
       \
-      .cc-title{ \
-        float:right; \
+      .cc-overview{ \
+        clear:both; \
         font-family:Verdana, Arial, Helvetica, sans-serif; \
-        margin:0 5px; \
         padding:5px; \
         background:#FFEDCB; \
         border:1px solid #E3BC74; \
+        text-align:center; \
       } \
       "
     );
@@ -98,8 +98,8 @@ var cosDnaCompare = (function ($) {
           // Find matches
           var output = matchArrays( product1.sort(), product2.sort() );
 
-          // Show the product title from the other page
-          showTitle( $(vDom), url, output.matching );
+          // Show the comparison overview
+          showOverview( $(vDom), url, output.matching );
 
           // Show matches
           showMatches( output.matching );
@@ -109,19 +109,19 @@ var cosDnaCompare = (function ($) {
     });
   };
 
-  // Show Title - Show the product title from the AJAX fetched page
+  // Show Overview - Show the product comparison from the AJAX fetched page
   // -------------------------------------------------------------------
-  var showTitle = function( $dom, url, matches ){
-    var title = $dom.find('.ProdTitle').text();
+  var showOverview = function( $dom, url, matches ){
+    var overview = $dom.find('.ProdTitle').text();
 
-    // Add title block if this is our first time running on the page
-    if( !loaded ) $('<div class="cc-title">').insertAfter('#ing_reviewbar');
+    // Add overview block if this is our first time running on the page
+    if( !loaded ) $('<div class="cc-overview">').insertBefore('.iStuffTable');
 
     // Build link to second product
-    var link = $('<a>').attr('target', '_blank').attr('href', url).text(title);
+    var link = $('<a>').attr('target', '_blank').attr('href', url).text( overview );
 
     // Add the number of matches with the link to the other product
-    $('.cc-title').empty().html( "<strong>" + matches.length + "</strong> matches with: " ).append( link );
+    $('.cc-overview').empty().html( "<strong>" + matches.length + "</strong> matches with: " ).append( link );
   };
 
   // Get Ingredients - Takes DOM node contaihning ingredients table and spits out an array
