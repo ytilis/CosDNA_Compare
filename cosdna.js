@@ -53,9 +53,19 @@ var cosDnaCompare = (function ($) {
     var customCSS =  $("<style>").attr("type", "text/css").appendTo("head");
 
     customCSS.append(
-      ".cos_compare-match{ \
-        background:khaki; \
-      }"
+      ".cc-match{ \
+        background:#FFEDCB; \
+      } \
+      \
+      .cc-title{ \
+        float:right; \
+        font-family:Verdana, Arial, Helvetica, sans-serif; \
+        margin:0 5px; \
+        padding:5px; \
+        background:#FFEDCB; \
+        border:1px solid #E3BC74; \
+      } \
+      "
     );
   };
 
@@ -65,7 +75,7 @@ var cosDnaCompare = (function ($) {
     // Get the ingredients on this page
     var product1 = getIngredients( $('html') );
 
-    $('.iStuffTable tr').removeClass('cos_compare-match');
+    $('.iStuffTable tr').removeClass('cc-match');
 
     // Fetch the page we're comparing
     $.ajax({
@@ -78,6 +88,9 @@ var cosDnaCompare = (function ($) {
           var vDom = document.createElement( 'div' );
           vDom.innerHTML = data;
 
+          // Show the product title from the other page
+          showTitle( $(vDom), product2 );
+
           // Get the ingredients from the other page
           product2 = getIngredients( $(vDom) );
 
@@ -85,6 +98,20 @@ var cosDnaCompare = (function ($) {
           showMatches( matchArrays( product1.sort(), product2.sort() ).matching );
         }
     });
+  };
+
+  // Show Title - Show the product title from the AJAX fetched page
+  // -------------------------------------------------------------------
+  var showTitle = function( $dom, url ){
+    var title = $dom.find('.ProdTitle').text();
+
+    if( $('.cc-title').length === 0 ){
+      $('<div class="cc-title">').insertAfter('#ing_reviewbar');
+    }
+
+    var link = $('<a>').attr('target', '_blank').attr('href', url).text(title);
+
+    $('.cc-title').empty().text( "Comparing to: " ).append( link );
   };
 
   // Get Ingredients - Takes DOM node contaihning ingredients table and spits out an array
@@ -129,7 +156,7 @@ var cosDnaCompare = (function ($) {
         var matched = matches.indexOf( $(this).text() );
 
         if( matched >= 0 ){
-          $(this).parent().addClass('cos_compare-match');
+          $(this).parent().addClass('cc-match');
         }
       });
 
