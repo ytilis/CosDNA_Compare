@@ -20,10 +20,10 @@ var cosDnaCompare = (function ($) {
   // Init - Anything you want to happen onLoad (usually event bindings)
   // -------------------------------------------------------------------
   var init = function () {
+    var hostname = window.location.hostname;
+
     // Make sure we're on CosDNA
-    if( window.location.hostname !== 'cosdna.com'){
-      alert( message.domain );
-    } else {
+    if( hostname.indexOf('cosdna.com') >= 0 ){
       // Only load custom styles if this is our first run on the page
       if( !loaded ) addStyles();
 
@@ -32,10 +32,10 @@ var cosDnaCompare = (function ($) {
 
       // Make sure the user filled out the prompt
       if(product2){
-        var hostname = $('<a>').attr('href', product2).attr('hostname');
+        hostname = $('<a>').attr('href', product2).attr('hostname');
 
-        // Make they entered a CosDNA link into the prompt
-        if (hostname === 'cosdna.com' && product2 != null) {
+        // Make sure they entered a CosDNA link into the prompt
+        if (hostname.indexOf('cosdna.com') >= 0  && product2 != null) {
           compareProducts(product2);
         } else {
           alert( message.domain );
@@ -43,6 +43,8 @@ var cosDnaCompare = (function ($) {
       } else {
         alert( message.nullInput );
       }
+    } else {
+      alert( message.domain );
     }
   };
 
@@ -124,7 +126,7 @@ var cosDnaCompare = (function ($) {
     $('.cc-overview').empty().html( "<strong>" + matches.length + "</strong> matches with: " ).append( link );
   };
 
-  // Get Ingredients - Takes DOM node contaihning ingredients table and spits out an array
+  // Get Ingredients - Takes DOM node containing ingredients table and spits out an array
   // -------------------------------------------------------------------
   var getIngredients = function( $dom ){
     var results = [];
@@ -174,7 +176,7 @@ var cosDnaCompare = (function ($) {
     };
   };
 
-  // Show Matches - Highlights matching ihngredients in the table on the page
+  // Show Matches - Highlights matching ingredients in the table on the page
   // -------------------------------------------------------------------
   var showMatches = function(matches){
     if( matches.length > 0 ){
