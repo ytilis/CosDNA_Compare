@@ -24,9 +24,6 @@ var cosDnaCompare = (function ($) {
 
     // Make sure we're on CosDNA
     if( hostname.indexOf('cosdna.com') >= 0 ){
-      // Only load custom styles if this is our first run on the page
-      if( !loaded ) addStyles();
-
       // Get product 2 from user
       var product2 = prompt( message.prompt );
 
@@ -52,28 +49,6 @@ var cosDnaCompare = (function ($) {
 
   // FUNCTIONS
   // ===================================================================
-
-  // Add Styles - Adds custom CSS classes for display purposes
-  // -------------------------------------------------------------------
-  var addStyles = function(){
-    var customCSS =  $("<style>").attr("type", "text/css").appendTo("head");
-
-    customCSS.append(
-      ".cc-match{ \
-        background:#FFEDCB; \
-      } \
-      \
-      .cc-overview{ \
-        clear:both; \
-        font-family:Verdana, Arial, Helvetica, sans-serif; \
-        padding:5px; \
-        background:#FFEDCB; \
-        border:1px solid #E3BC74; \
-        text-align:center; \
-      } \
-      "
-    );
-  };
 
   // Compare Products - Kickoff function for the comparison
   // -------------------------------------------------------------------
@@ -205,6 +180,3 @@ var cosDnaCompare = (function ($) {
     init              : init
   };
 })(jQuery);
-
-
-cosDnaCompare.init();

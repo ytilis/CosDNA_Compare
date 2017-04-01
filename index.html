@@ -21,11 +21,37 @@
     <div id="content" style="margin:100px auto; text-align:center;">
       <p>Click and drag this link to your bookmarks bar!</p>
       <p>
-        <a href="javascript:(function(){ if(typeof cosDnaCompare != 'undefined')cosDnaCompare.init();else{var new_script=document.createElement('script');new_script.src='http://ytilis.github.io/CosDNA_Compare/cosdna.js',document.body.appendChild(new_script)} })();">
+        <a id="bookmarklet" href="#" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
           CosDNA Compare
         </a>
       </p>
       <p>Then click it on a CosDNA.com product page</p>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript">
+      $( document ).ready(function() {
+          $.ajax({
+            type: 'GET',
+            url: "./bookmarklet",
+            error: function(xhr,status,error) {
+              alert( "Failed to fetch bookmarklet!" );
+            },
+            success: function(data, status, xhr) {
+              // Get our current URL
+              var url = [
+                location.origin,
+                location.pathname
+              ].join('');
+
+              // Set our current URL as the base for the bookmarklet includes (slightly hacky global replace here)
+              data = data.split(encodeURIComponent('{{bookmarklet_url}}'));
+              data = data.join(encodeURIComponent(url));
+
+              $('#bookmarklet').attr('href', data);
+            }
+        });
+      });
+    </script>
   </body>
 </html>

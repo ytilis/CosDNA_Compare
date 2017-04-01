@@ -1,0 +1,29 @@
+{
+  "name": "cosdna-compare",
+  "version": "2.0.0",
+  "description": "Tool to compare ingredients for different products on CosDNA Edit",
+  "main": "cosdna.js",
+  "scripts": {
+    "build": "bookmarklet bookmarklet.js bookmarklet",
+    "start": "npm run build && http-server ./ -o",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ytilis/CosDNA_Compare.git"
+  },
+  "author": {
+    "name": "Yury Tilis",
+    "email": "ytilis@gmail.com",
+    "url": "http://yury.tilis.net/"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ytilis/CosDNA_Compare/issues"
+  },
+  "homepage": "https://github.com/ytilis/CosDNA_Compare#readme",
+  "devDependencies": {
+    "bookmarklet": "0.0.6",
+    "http-server": "^0.9.0"
+  }
+}
