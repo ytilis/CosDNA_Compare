@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/ytilis/CosDNA_Compare#readme",
   "devDependencies": {
-    "bookmarklet": "0.0.6",
+    "bookmarklet": "git://github.com/ytilis/bookmarklet.git#load-once",
     "live-server": "^1.2.0",
     "node-sass": "^4.7.2",
     "npm-run-all": "^4.1.2"

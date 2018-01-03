@@ -9,10 +9,6 @@
     transform: translateX(100%);
   }
   
-  &-match{ 
-    background:hsl(39, 100%, 90%); 
-  } 
-  
   &-overview{ 
     clear: both; 
     font-family: Verdana, Arial, Helvetica, sans-serif; 
@@ -20,5 +16,29 @@
     background: #FFEDCB; 
     border: 1px solid #E3BC74; 
     text-align: center; 
+
+    a {
+      display: block;
+    }
   }
+}
+
+[data-cc-match="1"] {
+  background:hsl(39, 100%, 90%);
+}
+
+[data-cc-match="2"] {
+  background:hsl(39, 100%, 80%);
+}
+
+[data-cc-match="3"] {
+  background:hsl(39, 100%, 70%);
+}
+
+[data-cc-match="4"] {
+  background:hsl(39, 100%, 60%);
+}
+
+[data-cc-match="5"] {
+  background:hsl(39, 100%, 50%);
 }
