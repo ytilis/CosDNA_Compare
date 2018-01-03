@@ -29,7 +29,7 @@ var cosDnaCompare = (function ($) {
 
       // Make sure the user filled out the prompt
       if(product2){
-        hostname = $('<a>').attr('href', product2).attr('hostname');
+        hostname = $('<a>').attr('href', product2).get(0).hostname;
 
         // Make sure they entered a CosDNA link into the prompt
         if (hostname.indexOf('cosdna.com') >= 0  && product2 != null) {
