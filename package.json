@@ -7,10 +7,10 @@
     "test": "echo `Error: no test specified` && exit 1",
     "build:bookmarklet": "bookmarklet bookmarklet.js bookmarklet",
     "build:sass": "node-sass ./*.scss -o .",
-    "watch:sass": "node-sass --source-map true --source-map-embed true ./*.scss -wo .",
+    "watch:sass": "npm run build:sass -- --watch --source-map true --source-map-embed true.",
     "build": "run-p build:sass build:bookmarklet",
     "watch": "run-p watch:sass",
-    "serve": "live-server --host=localhost --no-browser --port=8080",
+    "serve": "live-server --host=localhost --no-browser --quiet --port=8080",
     "dev": "run-p build:* watch:* serve",
     "start": "npm run dev"
   },

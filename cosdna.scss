@@ -2,6 +2,11 @@
   position: relative;
 }
 
+.IngContent {
+  float: none;
+  width: auto;
+}
+
 .cc {
   &-details {
     position: absolute;
@@ -9,18 +14,22 @@
     transform: translateX(100%);
   }
   
-  &-overview{ 
+  &-overview { 
     clear: both; 
     font-family: Verdana, Arial, Helvetica, sans-serif; 
     padding: 5px; 
     background: #FFEDCB; 
     border: 1px solid #E3BC74; 
-    text-align: center; 
-
-    a {
-      display: block;
-    }
+    text-align: left; 
   }
+
+  &-matches {
+    text-align: center;
+  }
+}
+
+[data-cc-match] {
+  background:hsl(39, 100%, 50%);
 }
 
 [data-cc-match="1"] {
@@ -37,8 +46,4 @@
 
 [data-cc-match="4"] {
   background:hsl(39, 100%, 60%);
-}
-
-[data-cc-match="5"] {
-  background:hsl(39, 100%, 50%);
 }
