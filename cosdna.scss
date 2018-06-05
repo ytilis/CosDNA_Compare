@@ -1,0 +1,24 @@
+.iStuffTable {
+  position: relative;
+}
+
+.cc {
+  &-details {
+    position: absolute;
+    right: 0;
+    transform: translateX(100%);
+  }
+  
+  &-match{ 
+    background:hsl(39, 100%, 90%); 
+  } 
+  
+  &-overview{ 
+    clear: both; 
+    font-family: Verdana, Arial, Helvetica, sans-serif; 
+    padding: 5px; 
+    background: #FFEDCB; 
+    border: 1px solid #E3BC74; 
+    text-align: center; 
+  }
+}
