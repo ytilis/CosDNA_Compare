@@ -25,7 +25,12 @@
 
   &-matches {
     text-align: center;
+    cursor: pointer;
   }
+}
+
+[class^="Safety"] {
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.4)
 }
 
 [data-cc-match] {
@@ -33,17 +38,21 @@
 }
 
 [data-cc-match="1"] {
-  background:hsl(39, 100%, 90%);
+  background:hsl(255, 100%, 100%);
 }
 
 [data-cc-match="2"] {
-  background:hsl(39, 100%, 80%);
+  background:hsl(39, 100%, 90%);
 }
 
 [data-cc-match="3"] {
-  background:hsl(39, 100%, 70%);
+  background:hsl(39, 100%, 80%);
 }
 
 [data-cc-match="4"] {
+  background:hsl(39, 100%, 70%);
+}
+
+[data-cc-match="5"] {
   background:hsl(39, 100%, 60%);
 }

@@ -7,7 +7,7 @@ var cosDnaCompare = (function ($) {
   // -------------------------------------------------------------------
   var message = {
     prompt: 'Enter the URL for the CosDNA product you wish to compare',
-    domain: 'Sorry! This tool currently only works for cosDNA.com!',
+    domain: 'Sorry! This tool currently only works for CosDNA.com!',
     nullInput: 'You need to enter a product to compare this to!',
     other: 'Oops! Something went wrong! :(',
   };
@@ -74,7 +74,11 @@ var cosDnaCompare = (function ($) {
         saveProduct(url, $('html'));
         
         // Add a new table header
-        $table.find('tr:first-child').append(`<td class="iStuffList">Matches</td>`);
+        $table.prepend('<thead></thead>');
+        $table
+          .find('tr:first-child')
+          .append(`<td class="iStuffList">Matches</td>`)
+          .appendTo( $table.find('thead') );
 
         // Remove product elements which no longer apply
         $('.Ing_ProdDesc, .Ing_ProdImgOuter, .Ing_Comment, .Ing_ProdImgsOuter, #ing_reviewbar').remove();
@@ -89,14 +93,14 @@ var cosDnaCompare = (function ($) {
     var alreadySaved = !!products.filter(product => product.url === url.href).length;
     
     if (!alreadySaved) {
-      var name = $dom.find('.ProdTitle').text();
+      var name = $dom.find('.ProdTitle').text().trim();
       var link = $('<a>').attr('target', '_blank').attr('href', url.href).text( name ).prop('outerHTML');
       
       products.push({
         url: url.href,
         link: link,
         name: name,
-        ingredients: getIngredients( $dom ),
+        ingredients: getIngredients( $dom, name ),
       });
     }
 
@@ -107,38 +111,58 @@ var cosDnaCompare = (function ($) {
 
   var showComparison = function(){
     // Wipe the current table
-    $table.find('tr:nth-child(n+2)').remove();
+    $table.find('tbody tr').remove();
     
     $.each(products, function(pindex, product){
       $.each(product.ingredients, function(iIndex, ingredient){
-        var $exists = $table.find('[data-name="'+ ingredient.name +'"]');
+        var $exists = $table.find(`[data-name="${ingredient.name}"]`);
         if ($exists.length === 0) {
           $table.append(ingredient.html);
         } else {
-          var matches = (parseInt($exists.attr('data-cc-match')) || 0) + 1;
-          ingredient.name == 'Tansy' && console.log(ingredient.name, $exists.attr('data-cc-match'), matches);
-          $exists
+          var matches = parseInt($exists.attr('data-cc-match')) + 1;
+          $matches = $exists
             .attr('data-cc-match', matches)
-            .find('.cc-matches').html(matches);
+            .find('.cc-matches')
+            .html(matches);
+          
+          var list = $matches.attr('title') || '';
+
+          $matches
+            .attr('title', `${list}\r\n${product.name}`);
         }
       });
     });
-    // TODO: Add list of matched products to a popover on the right of the table
+
+    sortIngredients();
     
     // Show the comparison overview
     showOverview($table);
   };
 
+  var sortIngredients = function() {
+    var $tb = $table.find('tbody');
+    var $rows = $tb.find('tr');
+    $rows.sort((a, b) => {
+        var keyA = parseInt($(a).attr('data-cc-match'));
+        var keyB = parseInt($(b).attr('data-cc-match'));
+        return keyB - keyA;
+    });
+    $.each($rows, (index, $row) => {
+        $tb.append($row);
+    });
+  };
+
   // Show Overview - Show the product comparison from the AJAX fetched page
   // -------------------------------------------------------------------
-  var showOverview = function($table){
+  var showOverview = function($table) {
     // Add overview block if this is our first time running on the page
     if( products.length <= 2 ) $('<div class="cc-overview">').insertBefore($table);
     
     var matches = 0;
     
     $('[data-cc-match]').each((index, ele) => {
-      matches += parseInt($(ele).attr('data-cc-match'));
+      // Increment the match counter for every ingredient with more than one
+      parseInt($(ele).attr('data-cc-match')) > 1 && matches++;
     });
 
     var $overview = $('.cc-overview');
@@ -154,7 +178,7 @@ var cosDnaCompare = (function ($) {
 
   // Get Ingredients - Takes DOM node containing ingredients table and spits out an array
   // -------------------------------------------------------------------
-  var getIngredients = function( $dom ){
+  var getIngredients = function( $dom, productName ) {
     var results = [];
     $dom
       .find('.iStuffTable')                   // Read the table
@@ -165,10 +189,12 @@ var cosDnaCompare = (function ($) {
         var $tr = $(this).parent();
         
         $tr
-          // Add a data-attribute matching the name to it          
+          // Add a data-attribute matching the name to it
           .attr('data-name', $(this).text())
-          // Add a column for number of matches
-          .append(`<td nowrap class="cc-matches"></td>`);
+          // Add a data-attribute to track how many times it's matched, defaulting to 1
+          .attr('data-cc-match', 1)
+          // Add a column for number of matches, with the name of the product in the title attribute
+          .append(`<td nowrap class="cc-matches" title="${productName}">1</td>`);
 
         // Save the ingredient name and the html row
         results.push({
