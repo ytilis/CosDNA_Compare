@@ -31,6 +31,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script type="text/javascript">
       $( document ).ready(function() {
+          // Get the file with the generated bookmarklet code
           $.ajax({
             type: 'GET',
             url: "./bookmarklet",
@@ -45,9 +46,11 @@
               ].join('');
 
               // Set our current URL as the base for the bookmarklet includes (slightly hacky global replace here)
-              data = data.split(encodeURIComponent('{{bookmarklet_url}}'));
-              data = data.join(encodeURIComponent(url));
-
+              data = data
+                      .split(encodeURIComponent('{{bookmarklet_url}}'))
+                      .join(encodeURIComponent(url));
+              
+              // Bind it to the bookmarklet link 
               $('#bookmarklet').attr('href', data);
             }
         });
